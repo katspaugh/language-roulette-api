@@ -14,3 +14,11 @@ functions:
           path: token
           method: get
           cors: true
+
+  rooms:
+    handler: handler.rooms
+    events:
+      - http:
+          path: rooms
+          method: get
+          cors: true

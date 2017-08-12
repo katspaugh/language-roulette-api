@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "deploy": "serverless deploy",
-    "logs": "serverless logs -s dev -f token"
+    "logs": "serverless logs -s dev -f"
   },
   "author": "",
   "license": "ISC",

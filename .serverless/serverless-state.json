@@ -26,6 +26,12 @@
               "LogGroupName": "/aws/lambda/language-roulette-api-dev-token"
             }
           },
+          "RoomsLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/language-roulette-api-dev-rooms"
+            }
+          },
           "IamRoleLambdaExecution": {
             "Type": "AWS::IAM::Role",
             "Properties": {
@@ -68,6 +74,9 @@
                         "Resource": [
                           {
                             "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/language-roulette-api-dev-token:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/language-roulette-api-dev-rooms:*"
                           }
                         ]
                       },
@@ -79,6 +88,9 @@
                         "Resource": [
                           {
                             "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/language-roulette-api-dev-token:*:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/language-roulette-api-dev-rooms:*:*"
                           }
                         ]
                       }
@@ -107,7 +119,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/language-roulette-api/dev/1502560008642-2017-08-12T17:46:48.642Z/language-roulette-api.zip"
+                "S3Key": "serverless/language-roulette-api/dev/1502577114848-2017-08-12T22:31:54.848Z/language-roulette-api.zip"
               },
               "FunctionName": "language-roulette-api-dev-token",
               "Handler": "handler.token",
@@ -126,14 +138,50 @@
               "IamRoleLambdaExecution"
             ]
           },
-          "TokenLambdaVersion9GL43VIKYiUMH2it81luAdEkcynQo09C1i1j3v6Orhs": {
+          "TokenLambdaVersionTFdzGo9J56hrQjtaqr3Y3ih45xqm8HSDgISX5qPSM": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "TokenLambdaFunction"
               },
-              "CodeSha256": "9GL43VIKYiUMH2it81luAdEkcynQo09C1i1j3v6Orhs="
+              "CodeSha256": "TFdzGo9+J56hrQjtaqr3Y3ih45/xqm8HSDgISX5qPSM="
+            }
+          },
+          "RoomsLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/language-roulette-api/dev/1502577114848-2017-08-12T22:31:54.848Z/language-roulette-api.zip"
+              },
+              "FunctionName": "language-roulette-api-dev-rooms",
+              "Handler": "handler.rooms",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs6.10",
+              "Timeout": 6
+            },
+            "DependsOn": [
+              "RoomsLogGroup",
+              "IamRoleLambdaExecution"
+            ]
+          },
+          "RoomsLambdaVersionTFdzGo9J56hrQjtaqr3Y3ih45xqm8HSDgISX5qPSM": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "RoomsLambdaFunction"
+              },
+              "CodeSha256": "TFdzGo9+J56hrQjtaqr3Y3ih45/xqm8HSDgISX5qPSM="
             }
           },
           "ApiGatewayRestApi": {
@@ -152,6 +200,21 @@
                 ]
               },
               "PathPart": "token",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceRooms": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "rooms",
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
@@ -203,6 +266,52 @@
               }
             }
           },
+          "ApiGatewayMethodRoomsOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true,
+                    "method.response.header.Access-Control-Allow-Credentials": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'",
+                      "method.response.header.Access-Control-Allow-Credentials": "'false'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": ""
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceRooms"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
           "ApiGatewayMethodTokenGet": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
@@ -241,7 +350,45 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1502560008666": {
+          "ApiGatewayMethodRoomsGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceRooms"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "RoomsLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayDeployment1502577114891": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -250,7 +397,8 @@
               "StageName": "dev"
             },
             "DependsOn": [
-              "ApiGatewayMethodTokenGet"
+              "ApiGatewayMethodTokenGet",
+              "ApiGatewayMethodRoomsGet"
             ]
           },
           "TokenLambdaPermissionApiGateway": {
@@ -259,6 +407,39 @@
               "FunctionName": {
                 "Fn::GetAtt": [
                   "TokenLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "RoomsLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "RoomsLambdaFunction",
                   "Arn"
                 ]
               },
@@ -296,7 +477,13 @@
           "TokenLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "TokenLambdaVersion9GL43VIKYiUMH2it81luAdEkcynQo09C1i1j3v6Orhs"
+              "Ref": "TokenLambdaVersionTFdzGo9J56hrQjtaqr3Y3ih45xqm8HSDgISX5qPSM"
+            }
+          },
+          "RoomsLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "RoomsLambdaVersionTFdzGo9J56hrQjtaqr3Y3ih45xqm8HSDgISX5qPSM"
             }
           },
           "ServiceEndpoint": {
@@ -368,12 +555,46 @@
         "name": "language-roulette-api-dev-token",
         "package": {},
         "vpc": {}
+      },
+      "rooms": {
+        "handler": "handler.rooms",
+        "events": [
+          {
+            "http": {
+              "path": "rooms",
+              "method": "get",
+              "cors": {
+                "origins": [
+                  "*"
+                ],
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "GET"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "language-roulette-api-dev-rooms",
+        "package": {},
+        "vpc": {}
       }
     },
     "artifact": "/Users/katspaugh/Sites/language-roulette-api/.serverless/language-roulette-api.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/language-roulette-api/dev/1502560008642-2017-08-12T17:46:48.642Z",
+    "artifactDirectoryName": "serverless/language-roulette-api/dev/1502577114848-2017-08-12T22:31:54.848Z",
     "artifact": "language-roulette-api.zip"
   }
 }
