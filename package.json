@@ -1,0 +1,18 @@
+{
+  "name": "language-roulette-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "serverless deploy",
+    "logs": "serverless logs -s dev -f token"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "serverless": "^1.18.0"
+  },
+  "dependencies": {
+    "twilio": "^3.6.2"
+  }
+}

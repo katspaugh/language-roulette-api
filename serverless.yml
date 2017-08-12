@@ -1,0 +1,16 @@
+service: language-roulette-api
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  region: eu-west-1
+  profile: personal
+
+functions:
+  token:
+    handler: handler.token
+    events:
+      - http:
+          path: token
+          method: get
+          cors: true
