@@ -35,7 +35,10 @@ functions:
   auth:
     handler: handler.auth
     events:
-      - http: GET iot/keys
+      - http:
+          path: auth
+          method: get
+          cors: true
     memorySize: 128
     timeout: 10
 
