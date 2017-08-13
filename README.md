@@ -17,9 +17,15 @@ npm run deploy
 Check the logs:
 
 ```
-npm run logs
+npm run logs <NAME_OF_FUNCTION>
 ```
 For production:
 ```
 npm run logs-prod
+```
+
+## Create an IoT role
+
+```
+npm run create-iot-role
 ```

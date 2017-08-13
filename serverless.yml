@@ -5,6 +5,15 @@ provider:
   runtime: nodejs6.10
   region: eu-west-1
   profile: personal
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - 'iot:DescribeEndpoint'
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - 'sts:AssumeRole'
+      Resource: "*"
 
 functions:
   token:
@@ -22,3 +31,16 @@ functions:
           path: rooms
           method: get
           cors: true
+
+  auth:
+    handler: handler.auth
+    events:
+      - http: GET iot/keys
+    memorySize: 128
+    timeout: 10
+
+package:
+  exclude:
+    - .git/**
+    - bin/**
+    - README.md

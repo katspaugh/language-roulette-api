@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "deploy": "serverless deploy",
-    "logs": "serverless logs -s dev -f"
+    "logs": "serverless logs -s dev -f",
+    "create-iot-role": "cd bin/create-role; npm install; AWS_PROFILE=personal node index.js; cd -"
   },
   "author": "",
   "license": "ISC",
