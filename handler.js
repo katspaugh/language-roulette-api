@@ -74,6 +74,35 @@ module.exports.rooms = (event, context, callback) => {
     .catch(err => respond(err));
 };
 
+module.exports.createRoom = (event, context, callback) => {
+  const Twilio = require('twilio');
+
+  const respond = corsResponse.bind(null, callback);
+
+  // Create an access token which we will sign and return to the client,
+  // containing the grant we just created.
+  const client = new Twilio(
+    process.env.TWILIO_API_KEY,
+    process.env.TWILIO_API_SECRET,
+    {
+      accountSid: process.env.TWILIO_ACCOUNT_SID
+    }
+  );
+
+  client.video.rooms.create({
+    uniqueName: JSON.parse(event.body).uniqueName
+  })
+    .then(room => {
+      respond(null, {
+        dateCreated: room.dateCreated,
+        dateUpdated: room.dateUpdated,
+        uniqueName: room.uniqueName
+      });
+    })
+    .catch(err => respond(err));
+};
+
+
 /* IoT auth */
 module.exports.auth = (event, context, callback) => {
   const AWS = require('aws-sdk');

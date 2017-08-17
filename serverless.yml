@@ -32,6 +32,14 @@ functions:
           method: get
           cors: true
 
+  create-room:
+    handler: handler.createRoom
+    events:
+      - http:
+          path: rooms
+          method: post
+          cors: true
+
   auth:
     handler: handler.auth
     events:
